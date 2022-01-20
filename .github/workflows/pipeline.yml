@@ -33,3 +33,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: fullstack-pokemons
           heroku_email: ${{secrets.HEROKU_EMAIL}}
+          healthcheck: https://fullstack-pokemons.herokuapp.com/version
+          checkstring: "1"
+          delay: 5
+          rollbackonhealthcheckfailed: true
