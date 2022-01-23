@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - dev-workflow
+    pull_request:
+    branches: [dev]
+    types: [opened, synchronize]
 
 jobs:
   test:
