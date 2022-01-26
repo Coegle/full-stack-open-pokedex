@@ -13,15 +13,12 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: gihub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: commits
-        env:
-          COMMITS: ${{ toJson(github.event.commits) }}
-        run: echo "$COMMITS"
-      - name: commit messages
+      - name: echo COMMIT_MESSAGES
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
+      - name: escape when contains skip
+        env: 
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+        if: contains(join(COMMIT_MESSAGES, ', '), '#skip') == false && github.event_name == 'push' 
+        run: echo "deployed"
