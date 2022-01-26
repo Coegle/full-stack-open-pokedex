@@ -9,7 +9,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  simple_deployment_pipeline:
+  deployment_job:
     runs-on: ubuntu-18.04
     env: 
       COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
@@ -49,4 +49,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
-          DRY_RUN: true
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
+          message: |
+            _status: ${{ job.status }}_
+            *workflow: ${{ github.workflow }}*
+            *job: ${{ github.job }}*
+            Repository: ${{ github.repository }}
+            Commit Message: ${{ github.event.commits[0].message }}
+            Author: ${{ github.actor }}
+            [See changes](https://github.com/${{ github.repository }}/commit/${{github.sha}})
