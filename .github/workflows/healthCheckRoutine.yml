@@ -1,0 +1,11 @@
+name: healthCheck
+on: 
+  schedule:
+    - cron: '0 0 * * *'
+steps:
+  - name: Check the deployed service URL
+    uses: jtalk/url-health-check-action@v2
+    with:
+      url: https://fullstack-pokemons.herokuapp.com
+      max-attempts: 2
+      retry-delay: 5s
