@@ -12,7 +12,7 @@ jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-18.04
     env: 
-      - COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+      COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
