@@ -9,7 +9,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  deployment_job:
+  deployment-job:
     runs-on: ubuntu-18.04
     env: 
       COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
@@ -43,6 +43,9 @@ jobs:
           checkstring: "2"
           delay: 5
           rollbackonhealthcheckfailed: true
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
       - name: Bump version and push tag
         if: contains(join(env.COMMIT_MESSAGES, ', '), '#skip') == false && github.event_name == 'push' 
         uses: anothrNick/github-tag-action@1.36.0
@@ -50,15 +53,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
       - name: send telegram message on push
+        if: always()
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: markdown
           message: |
-            _status: ${{ job.status }}_
-            *workflow: ${{ github.workflow }}*
-            *job: ${{ github.job }}*
+            *Status: ${{ job.status }}*
+            Workflow: ${{ github.workflow }}
+            Job: ${{ github.job }}
             Repository: ${{ github.repository }}
             Commit Message: ${{ github.event.commits[0].message }}
             Author: ${{ github.actor }}
